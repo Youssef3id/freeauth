@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import connectDB from './model/mongodb.js';
@@ -17,8 +18,9 @@ const port = env.PORT;
 
 // Middleware setup for JSON parsing, CORS with frontend, and cookie handling
 app.use(express.json());
+app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:5173', // or your frontend URL whatever it is 
+  origin: env.FRONTEND_URL,
   credentials: true               
 }));
 app.use(cookieParser());
@@ -27,17 +29,25 @@ app.use(cookieParser());
 app.use(globalLimiter);
 app.use('/api/auth', authRoutes);
 
+// 404 JSON handler for unknown routes
+app.use((req, res) => res.status(404).json({ success: false, message: 'Not found' }));
+
 // Global error handling middleware
 app.use(errorHandler);
 
-// Establish connection to MongoDB database
-try {
-    connectDB();
-} catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
-}
+// Establish connection to MongoDB database before starting the server
+const startServer = async () => {
+    try {
+        await connectDB();
+    } catch (error) {
+        console.error('Failed to connect to MongoDB:', error);
+        process.exit(1);
+    }
 
-// Start the Express server on specified port
-app.listen(port, () => {
-    console.log(`Running on PORT:${port}`);
-});
+    // Start the Express server on specified port
+    app.listen(port, () => {
+        console.log(`Running on PORT:${port}`);
+    });
+};
+
+startServer();

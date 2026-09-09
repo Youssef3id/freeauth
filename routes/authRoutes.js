@@ -20,6 +20,8 @@ import {
     registerLimiter,
     refreshLimiter,
     resetPasswordLimiter,
+    verifyEmailLimiter,
+    resendOtpLimiter,
 } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -32,8 +34,8 @@ router.post('/refresh', refreshLimiter, refreshTokenController);
 router.get('/me', authMiddleware, getMe);
 router.post('/forgot-password', resetPasswordLimiter, validate(forgotPasswordSchema), forgotPassword);
 router.post('/reset-password', resetPasswordLimiter, validate(resetPasswordSchema), resetPassword);
-router.post('/verify-email', authLimiter, validate(verifyEmailSchema), verifyEmail);
-router.post('/resend-otp', resetPasswordLimiter, validate(resendOTPSchema), resendOTP);
+router.post('/verify-email', verifyEmailLimiter, validate(verifyEmailSchema), verifyEmail);
+router.post('/resend-otp', resendOtpLimiter, validate(resendOTPSchema), resendOTP);
 router.post('/change-password', authMiddleware, validate(changePasswordSchema), changePassword);
 
 export default router;

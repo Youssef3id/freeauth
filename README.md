@@ -216,6 +216,7 @@ All errors flow through a single centralized handler that distinguishes between:
 - ~~Email verification flow (OTP fields already in user model, nodemailer in deps)~~ ✅
 - ~~Forgot / reset password (validation schemas already written)~~ ✅
 - verifyAccessToken / verifyRefreshToken utilities
+- Wire nodemailer for real OTP email delivery (reserved dependency, OTPs are console-logged in dev for now)
 - ~~Env validation at startup (`config/env.js`)~~ ✅
 - Test suite (Jest + supertest)
 

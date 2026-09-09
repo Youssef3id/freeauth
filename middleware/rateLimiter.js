@@ -58,3 +58,26 @@ export const resetPasswordLimiter = rateLimit({
         message: "Too many password reset attempts, try again after an half hour"
     }
 });
+
+export const verifyEmailLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // max 5 verification attempts
+    standardHeaders: true,
+    legacyHeaders: false,
+
+    message: {
+        success: false,
+        message: "Too many verification attempts, try again after 15 minutes"
+    }
+});
+
+export const resendOtpLimiter = rateLimit({
+    windowMs: 30 * 60 * 1000, // 0.5 hour
+    max: 5, // max 5 OTP resend attempts
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: "Too many OTP resend attempts, try again after an half hour"
+    }
+});

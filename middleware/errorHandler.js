@@ -13,11 +13,21 @@ const errorHandler = (err, req, res, next) => {
     let message = err.message || "Internal Server Error";
     let errors = null;
 
+    // Operational application errors (must come first so AppError
+    // is never mis-caught by a generic branch below)
+    if (err instanceof AppError) {
+        return res.status(err.statusCode).json({
+            success: false,
+            message: err.message
+        });
+    }
+
     // Zod validation errors
     if (err.name === 'ZodError') {
         statusCode = 422;
         message = "Validation failed";
-        errors = err.errors.map(e => ({
+        const issues = err.issues || err.errors || [];
+        errors = issues.map(e => ({
             field: e.path.join('.'),
             message: e.message
         }));
