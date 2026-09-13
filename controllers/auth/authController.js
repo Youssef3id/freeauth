@@ -1,4 +1,4 @@
-import { loginUser as loginUserService, registerUser as registerUserService, refreshSession, verifyEmail as verifyEmailService, resendOTP as resendOTPService, forgotPassword as forgotPasswordService, resetPassword as resetPasswordService, changePassword as changePasswordService, logoutUser as logoutUserService, getMe as getMeService } from '../../services/authService.js';
+import { auth } from '../../config/auth.ts';
 import { setAuthCookies, clearAuthCookies } from '../../utils/cookies.js';
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import { logger } from '../../utils/logger.js';
@@ -12,13 +12,13 @@ export const getApiStatus = (req, res) => {
 };
 
 export const getMe = asyncHandler(async (req, res) => {
-    const user = await getMeService(req.user.userId);
+    const user = await auth.getMe(req.user.userId);
     return res.status(200).json({ success: true, data: user });
 });
 
 // Verifies refresh token and issues a new access token if valid
 export const refreshTokenController = asyncHandler(async (req, res) => {
-    const { accessToken, refreshToken: newRefreshToken } = await refreshSession(req.cookies?.refreshToken);
+    const { accessToken, refreshToken: newRefreshToken } = await auth.refreshSession(req.cookies?.refreshToken);
 
     setAuthCookies(res, accessToken, newRefreshToken);
 
@@ -32,7 +32,7 @@ export const refreshTokenController = asyncHandler(async (req, res) => {
 export const registerUser = asyncHandler(async (req, res) => {
     const { email } = req.body;
 
-    const { accessToken, refreshToken, otp } = await registerUserService(req.body);
+    const { accessToken, refreshToken, otp } = await auth.registerUser(req.body);
 
     setAuthCookies(res, accessToken, refreshToken);
 
@@ -46,7 +46,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 // Authenticates user credentials and creates session with access/refresh tokens
 export const loginUser = asyncHandler(async (req, res) => {
-    const { accessToken, refreshToken } = await loginUserService(req.body);
+    const { accessToken, refreshToken } = await auth.loginUser(req.body);
 
     setAuthCookies(res, accessToken, refreshToken);
 
@@ -61,7 +61,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     // 1) check if user with email exists
     const { email } = req.body;
 
-    const result = await forgotPasswordService(req.body);
+    const result = await auth.forgotPassword(req.body);
 
     if (result.sent) {
         // 3) Send OTP to user's email (simulate by logging to console fo development)
@@ -76,7 +76,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 export const resetPassword = asyncHandler(async (req, res) => {
-    await resetPasswordService(req.body);
+    await auth.resetPassword(req.body);
 
     return res.status(200).json({
         success: true,
@@ -87,7 +87,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 export const verifyEmail = asyncHandler(async (req, res) => {
 
     // 1) Validate email and OTP, check if OTP is correct and not expired, then mark account as verified
-    await verifyEmailService(req.body);
+    await auth.verifyEmail(req.body);
 
     return res.status(200).json({
         success: true,
@@ -100,7 +100,7 @@ export const resendOTP = asyncHandler(async (req, res) => {
     // Resends verification OTP if account is not yet verified
     const { email } = req.body;
 
-    const result = await resendOTPService(req.body);
+    const result = await auth.resendOTP(req.body);
 
     if (result.sent) {
         logger.info(`[DEV] Resend verify OTP for ${email}: ${result.otp}`);
@@ -114,7 +114,7 @@ export const resendOTP = asyncHandler(async (req, res) => {
 
 // Allows authenticated user to change their password
 export const changePassword = asyncHandler(async (req, res) => {
-    await changePasswordService(req.user.userId, req.body);
+    await auth.changePassword(req.user.userId, req.body);
 
     return res.status(200).json({
         success: true,
@@ -126,7 +126,7 @@ export const changePassword = asyncHandler(async (req, res) => {
 export const logoutUser = asyncHandler(async (req, res) => {
     const token = req.cookies?.refreshToken;
 
-    await logoutUserService(token);
+    await auth.logoutUser(token);
 
     clearAuthCookies(res);
 

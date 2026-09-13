@@ -5,6 +5,7 @@
     "moduleResolution": "nodenext",
     "strict": true,
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "noEmit": true
   },
@@ -15,6 +16,9 @@
     "utils/**/*",
     "config/**/*",
     "middleware/**/*",
-    "model/**/*"
+    "model/**/*",
+    "controllers/**/*",
+    "routes/**/*",
+    "app.js"
   ]
 }
