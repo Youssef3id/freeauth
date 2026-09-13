@@ -9,8 +9,10 @@ const userSchema = new mongoose.Schema({
     isAccountVerified: {type: Boolean, default: false},
     resetOTP: {type: String, default: null},
     resetOTPExpire: {type: Number, default: 0},
-    otpAttempts: {type: Number, default: 0},
-    otpLockUntil: {type: Date, default: null}
+    verifyAttempts: {type: Number, default: 0},
+    verifyLockUntil: {type: Date, default: null},
+    resetAttempts: {type: Number, default: 0},
+    resetLockUntil: {type: Date, default: null}
 })
 
 const userModel = mongoose.model("user", userSchema);
