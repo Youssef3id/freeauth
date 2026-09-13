@@ -189,7 +189,7 @@ Why specific named methods (`markVerified`, `setResetOTP`, ...) instead of one g
 
 ## 5. What "core" actually looks like after this refactor
 
-`authService.js`'s business logic (bcrypt calls, JWT signing, OTP generation, lockout
+`core/authService.ts`'s business logic (bcrypt calls, JWT signing, OTP generation, lockout
 rules, rotation/reuse-detection rules) **does not change**. The only thing that changes
 is where its data comes from:
 
@@ -247,8 +247,8 @@ These apply to any coding agent working on `core/` or `adapters/` in this repo:
 - [x] Strict-contract decision agreed (over a flexible/loose contract)
 - [x] `UserRecord` / `SessionRecord` shapes finalized
 - [x] `UserAdapter` / `SessionAdapter` method signatures finalized
-- [ ] `core/types.ts` written
-- [ ] `authService.js` decoupled from Mongoose, rebuilt against `AuthAdapter`
+- [x] `core/types.ts` written
+- [x] `authService.js` decoupled from Mongoose, rebuilt against `AuthAdapter`
 - [ ] `mongooseAdapter()` implemented (first real adapter, ports existing repositories)
 - [ ] Package structure decision (single package with subpath exports vs. monorepo) —
       **not yet decided, still open**
