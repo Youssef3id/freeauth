@@ -1,8 +1,8 @@
 // Mongoose adapter — the first real implementation of the AuthAdapter contract.
 // Source of truth for every shape and method name: doc/openauth-architecture.md
-// This is a relocation, not a rewrite: the queries below mirror the existing
-// repositories/userRepository.js, repositories/sessionRepository.js, and their
-// models.
+// This is a relocation, not a rewrite: the queries below mirror the legacy
+// repositories/userRepository.js and repositories/sessionRepository.js (since
+// removed) and their models.
 
 import userModel from '../model/userModel.js';
 import refreshTokenModel from '../model/refreshToken.js';

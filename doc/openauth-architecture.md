@@ -204,10 +204,10 @@ const user = await adapter.users.findByEmail(email);
 Everything else in the function — password verification, token issuing, error
 throwing — stays exactly as-is.
 
-The first real adapter is `mongooseAdapter()`, and it is essentially the current
-`repositories/userRepository.js` and `repositories/sessionRepository.js`, moved
-into an `adapters/mongoose.ts` file and reshaped to satisfy the interface above.
-No new logic — a relocation with a translation layer.
+The first real adapter is `mongooseAdapter()`, and it is essentially the legacy
+`repositories/userRepository.js` and `repositories/sessionRepository.js` (since
+removed), relocated into `adapters/mongoose.ts` and reshaped to satisfy the
+interface above. No new logic — a relocation with a translation layer.
 
 ---
 
