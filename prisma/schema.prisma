@@ -1,0 +1,46 @@
+// OpenAuth reference Prisma schema — a faithful structural port of the Mongoose
+// models (model/userModel.js, model/refreshToken.js) into Prisma schema syntax.
+// Source of truth for the core contract: doc/openauth-architecture.md
+//
+// Prisma 7 conventions: the datasource carries no `url` (connection strings now
+// live in prisma.config.ts / the PrismaClient constructor's adapter), and the new
+// `prisma-client` generator emits the client into an explicit project-local output.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  password          String
+  isAccountVerified Boolean  @default(false)
+
+  verifyOTP         String?
+  verifyOTPExpire   BigInt?
+  verifyAttempts    Int      @default(0)
+  verifyLockUntil   DateTime?
+
+  resetOTP          String?
+  resetOTPExpire    BigInt?
+  resetAttempts     Int      @default(0)
+  resetLockUntil    DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
