@@ -5,19 +5,24 @@
 // rotation/reuse detection) is unchanged; only the data source changed, from Mongoose
 // repositories/models to adapter.* calls. No DB driver or ORM import is allowed here.
 
-import { hashPassword, verifyPassword } from '../services/passwordService.js';
-import { issueOTP, hashOTP } from '../services/otpService.js';
-import { generateAccessToken, generateRefreshToken } from '../utils/authTokens.js';
-import { AppError } from '../middleware/errorHandler.js';
-import { logger } from '../utils/logger.js';
-import { REFRESH_TOKEN_TTL_MS } from '../utils/constants.js';
+import { hashPassword, verifyPassword } from '../internal/passwordService.js';
+import { issueOTP, hashOTP } from '../internal/otpService.js';
+import { generateAccessToken, generateRefreshToken } from '../internal/authTokens.js';
+import { AppError } from '../internal/errors.js';
+import { logger } from '../internal/logger.js';
+import { REFRESH_TOKEN_TTL_MS } from '../internal/constants.js';
 import type { AuthAdapter, UserRecord } from './types.js';
 
 const MAX_OTP_ATTEMPTS = 5;
 const OTP_LOCKOUT_MS = 15 * 60 * 1000;
 
-export function createAuth(config: { adapter: AuthAdapter }) {
-    const { adapter } = config;
+export interface AuthSecrets {
+    accessTokenSecret: string;
+    refreshTokenSecret: string;
+}
+
+export function createAuth(config: { adapter: AuthAdapter; secrets: AuthSecrets }) {
+    const { adapter, secrets } = config;
 
     const checkOtpLock = (user: UserRecord, type: 'verify' | 'reset') => {
         const lockUntil = type === 'verify' ? user.verifyLockUntil : user.resetLockUntil;
@@ -114,8 +119,8 @@ export function createAuth(config: { adapter: AuthAdapter }) {
             throw new AppError('Session invalidated due to suspicious activity, please login again', 401);
         }
 
-        const accessToken = generateAccessToken({ id: storedToken.userId });
-        const refreshToken = generateRefreshToken({ id: storedToken.userId });
+        const accessToken = generateAccessToken({ id: storedToken.userId }, secrets.accessTokenSecret);
+        const refreshToken = generateRefreshToken({ id: storedToken.userId }, secrets.refreshTokenSecret);
 
         await adapter.sessions.create({
             userId: storedToken.userId,
@@ -147,8 +152,8 @@ export function createAuth(config: { adapter: AuthAdapter }) {
             verifyOTPExpire: otpExpire,
         });
 
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
+        const accessToken = generateAccessToken(user, secrets.accessTokenSecret);
+        const refreshToken = generateRefreshToken(user, secrets.refreshTokenSecret);
 
         await adapter.sessions.create({
             userId: user.id,
@@ -178,8 +183,8 @@ export function createAuth(config: { adapter: AuthAdapter }) {
             throw new AppError('Please verify your email before logging in', 403);
         }
 
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
+        const accessToken = generateAccessToken(user, secrets.accessTokenSecret);
+        const refreshToken = generateRefreshToken(user, secrets.refreshTokenSecret);
 
         await adapter.sessions.create({
             userId: user.id,

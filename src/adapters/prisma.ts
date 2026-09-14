@@ -18,7 +18,25 @@
 //    this never fires in practice — noted as a behavioral divergence, not smoothed over.
 
 import type { AuthAdapter, SessionAdapter, SessionRecord, UserAdapter, UserRecord } from '../core/types.js';
-import type { PrismaClient } from '../generated/prisma/client.ts';
+
+// Minimal structural type for the Prisma client surface this adapter uses.
+// The consumer passes their own generated PrismaClient (which always satisfies
+// this shape); the library never imports a generated client itself, so it has
+// no build-time dependency on `prisma generate` output and ships no dangling
+// type references. Args are intentionally `any`: every real Prisma delegate
+// method accepts these call shapes, and the returns are the awaited row types.
+export interface PrismaClientLike {
+    user: {
+        findUnique(args: any): Promise<PrismaUserShape | null>;
+        create(args: any): Promise<PrismaUserShape>;
+        update(args: any): Promise<PrismaUserShape>;
+    };
+    refreshToken: {
+        create(args: any): Promise<PrismaTokenShape>;
+        findFirst(args: any): Promise<PrismaTokenShape | null>;
+        updateMany(args: any): Promise<{ count: number }>;
+    };
+}
 
 // Structural stand-in for the generated Prisma client's query results, so the
 // translator below is self-contained and checkable against the inferred query
@@ -50,7 +68,7 @@ interface PrismaTokenShape {
     createdAt: Date;
 }
 
-export function prismaAdapter(prismaClient: PrismaClient): AuthAdapter {
+export function prismaAdapter(prismaClient: PrismaClientLike): AuthAdapter {
     // Maps a Prisma User row to the contract's UserRecord. Field names match the
     // schema (which mirrors Mongoose naming), so the only real translation is
     // BigInt -> number on the OTP expiries; `id` flows through untouched.

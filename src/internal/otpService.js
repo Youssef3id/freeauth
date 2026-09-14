@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { OTP_TTL_MS } from '../utils/constants.js';
+import { OTP_TTL_MS } from './constants.js';
 
 // type is one of 'verify' | 'reset'
 export const generateOTP = () => {

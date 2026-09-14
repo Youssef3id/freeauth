@@ -1,12 +1,5 @@
 import { env } from '../config/env.js';
-
-class AppError extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-        this.isOperational = true;
-    }
-}
+import { AppError } from '../src/internal/errors.js';
 
 const errorHandler = (err, req, res, next) => {
     let statusCode = err.statusCode || 500;

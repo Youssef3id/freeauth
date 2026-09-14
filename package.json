@@ -1,36 +1,85 @@
 {
-  "name": "test2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "name": "openauth",
+  "version": "0.1.0",
+  "description": "Drop-in auth library with an adapter interface — OTP email verification, JWT access/refresh sessions with rotation and reuse detection, per-flow lockouts. Bring your own database via openauth/mongoose or openauth/prisma.",
+  "license": "MIT",
+  "//": "TODO: replace repository with the real GitHub URL — no public repo exists yet.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TODO/openauth.git"
+  },
+  "type": "module",
+  "main": "./dist/core/index.js",
+  "module": "./dist/core/index.js",
+  "types": "./dist/core/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js",
+      "default": "./dist/core/index.js"
+    },
+    "./mongoose": {
+      "types": "./dist/adapters/mongoose.d.ts",
+      "import": "./dist/adapters/mongoose.js",
+      "default": "./dist/adapters/mongoose.js"
+    },
+    "./prisma": {
+      "types": "./dist/adapters/prisma.d.ts",
+      "import": "./dist/adapters/prisma.js",
+      "default": "./dist/adapters/prisma.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "keywords": [],
+  "keywords": [
+    "auth",
+    "authentication",
+    "otp",
+    "jwt",
+    "mongoose",
+    "prisma"
+  ],
   "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "@prisma/client": "^7.10.0",
     "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^7.10.0",
+    "mongoose": "^9.4.1"
+  },
+  "peerDependenciesMeta": {
+    "@prisma/client": {
+      "optional": true
+    },
+    "mongoose": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@prisma/client": "^7.10.0",
+    "@types/node": "^26.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.1",
     "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.4.1",
     "nodemailer": "^8.0.7",
-    "zod": "^4.3.6"
-  },
-  "devDependencies": {
-    "@types/node": "^26.5.1",
     "nodemon": "^3.1.14",
     "prisma": "^7.10.0",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "zod": "^4.3.6"
   }
 }

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { BCRYPT_ROUNDS } from '../utils/constants.js';
+import { BCRYPT_ROUNDS } from './constants.js';
 
 export const hashPassword = async (plainPassword) => {
     return bcrypt.hash(plainPassword, BCRYPT_ROUNDS);

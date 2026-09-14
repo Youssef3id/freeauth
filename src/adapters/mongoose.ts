@@ -4,8 +4,8 @@
 // repositories/userRepository.js and repositories/sessionRepository.js (since
 // removed) and their models.
 
-import userModel from '../model/userModel.js';
-import refreshTokenModel from '../model/refreshToken.js';
+import userModel from '../internal/models/userModel.js';
+import refreshTokenModel from '../internal/models/refreshToken.js';
 import type { AuthAdapter, SessionAdapter, SessionRecord, UserAdapter, UserRecord } from '../core/types.js';
 
 // Maps a Mongoose user document to the contract's UserRecord.

@@ -250,5 +250,4 @@ These apply to any coding agent working on `core/` or `adapters/` in this repo:
 - [x] `core/types.ts` written
 - [x] `authService.js` decoupled from Mongoose, rebuilt against `AuthAdapter`
 - [x] `mongooseAdapter()` implemented (first real adapter, ports existing repositories)
-- [ ] Package structure decision (single package with subpath exports vs. monorepo) —
-      **not yet decided, still open**
+- [x] Package structure decision (single package with subpath exports vs. monorepo) — decided: single `openauth` package, library sources self-contained under `src/`, built with `tsc` to `dist/`

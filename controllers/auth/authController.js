@@ -1,7 +1,7 @@
 import { auth } from '../../config/auth.ts';
 import { setAuthCookies, clearAuthCookies } from '../../utils/cookies.js';
 import { asyncHandler } from '../../utils/asyncHandler.js';
-import { logger } from '../../utils/logger.js';
+import { logger } from '../../src/internal/logger.js';
 
 // Returns basic API status to confirm the server is running
 export const getApiStatus = (req, res) => {

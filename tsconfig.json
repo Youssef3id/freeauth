@@ -10,8 +10,7 @@
     "noEmit": true
   },
   "include": [
-    "core/**/*",
-    "adapters/**/*",
+    "src/**/*",
     "services/**/*",
     "utils/**/*",
     "config/**/*",

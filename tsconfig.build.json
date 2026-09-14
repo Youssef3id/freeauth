@@ -1,0 +1,14 @@
+{
+  // Build-only config: the dev tsconfig uses noEmit + allowImportingTsExtensions
+  // (Node native type stripping), neither of which permits emit — so the build
+  // gets its own config that flips both and adds declaration output.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"]
+}
